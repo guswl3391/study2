@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+
+	 <!-- 게시판 글 작성 -->
+   <insert id="insert" parameterType="kr.co.vo.BoardVO" useGeneratedKeys="true" keyProperty="bno">
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			SELECT MP_BOARD_SEQ.NEXTVAL FROM DUAL	   
+	    </selectKey>
+	   
+	   INSERT INTO MP_BOARD(  
+	   							BNO, PARENT_BNO, DEPTH, SORT
+	   					      , TITLE 
+	   					      , CONTENT 
+	   					      , WRITER
+	   					      , PW  )
+	                 VALUES(  
+	                 			#{bno}
+	                 		  , #{parent_bno}
+	                 		  , #{depth}
+	                 		  , ( select (nvl(max(sort), 0)+10) as sort 
+								  from mp_board 
+								  where parent_bno = #{parent_bno} ) 
+	                 		  , #{title}
+	                 		  , #{content}
+	                 		  , #{writer}
+	                 		  , #{pw}  )
+   
+   </insert>
+   
+  
+	<!-- <select id="list" resultType="kr.co.vo.BoardVO">
+		SELECT   BNO
+			   , TITLE
+			   , WRITER
+			   , REGDATE
+		  FROM MP_BOARD
+		  ORDER BY BNO DESC
+	</select> -->
+
+	 <!-- 게시판 리스트 -->
+	<select id="list" resultType="kr.co.vo.BoardVO" parameterType="kr.co.vo.SearchCriteria">
+		SELECT T3.*
+		  FROM ( 
+			SELECT CASE WHEN T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0 
+				THEN '=== 원글이 삭제되었습니다. ==='
+                 ELSE T2.TITLE
+                   END AS TITLE_TEMP
+                   , T2.* 
+                   , ROWNUM AS RRNUM
+			  
+			  FROM (
+				SELECT  T1.TITLE,
+				        T1.BNO, 
+				        T1.PARENT_BNO,
+				        T1.SORT,
+				        T1.DEPTH,
+				        T1.CONTENT, 
+				        T1.WRITER, 
+				        T1.REGDATE,
+				        RNUM,
+				        DELETE_YN,
+				        (select count(*) from mp_reply s1 where s1.bno = t1.bno) reply_cnt,
+				        ROWNUM as ORDERNUM
+				  
+				  FROM (
+				     SELECT TITLE, BNO, PARENT_BNO, SORT, DEPTH, CONTENT, WRITER, REGDATE, DELETE_YN,
+				     		ROW_NUMBER() OVER(ORDER BY BNO) AS RNUM,
+				     		(select count(*) from mp_reply s1 where s1.bno = bno) reply_cnt
+				       FROM MP_BOARD
+				      
+				  ) T1
+				  
+				START WITH T1.PARENT_BNO = 0
+				CONNECT BY PRIOR T1.BNO = T1.PARENT_BNO
+				ORDER SIBLINGS BY SORT DESC
+		  	 ) T2
+		  	 		WHERE 1=1
+				    <include refid="search" />
+		  	 <!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
+		  ) T3
+		  WHERE T3.ORDERNUM BETWEEN #{rowStart} AND #{rowEnd}
+	</select>
+	
+<!-- 	
+		SELECT  BNO, 
+		        TITLE, 
+		        CONTENT,
+		        WRITER,
+		        REGDATE,
+		        RNUM
+		 FROM ( 
+		        SELECT BNO, 
+		               TITLE, 
+		               CONTENT, 
+		               WRITER,
+		               REGDATE, 
+		               ROW_NUMBER() OVER(ORDER BY BNO) AS RNUM, 
+		               ROW_NUMBER() OVER(ORDER BY BNO DESC) AS RRNUM
+		      
+		     	 FROM MP_BOARD
+		     	 
+		         WHERE 1=1
+		         	
+             ) MP
+		WHERE ROWNUM BETWEEN #{rowStart} AND #{rowEnd} -->
+	
+	
+	<!-- where 1=1 : 결국  있으나마나 한 조건이다(참) -->
+	<!-- 만약, 이 조건(동적쿼리 sql문)이 처음 나온 조건이라면, 앞에 and를 빼주기 
+	 만약, 이 조건이 처음 나온 조건이 아니라면, 앞에 꼭! and를 붙여주기 -->
+	
+	<!-- 게시물 총 갯수 쿼리 -->
+	<select id="listCount" parameterType="kr.co.vo.SearchCriteria" resultType="int">
+		
+		SELECT COUNT(*)
+		FROM ( 
+		 SELECT T1.*
+		  FROM (
+		     SELECT T1.TITLE, T1.CONTENT, T1.WRITER, T1.BNO, T1.PARENT_BNO, T1.DELETE_YN
+		       FROM MP_BOARD T1
+		      
+		  ) T1
+		START WITH T1.PARENT_BNO = 0
+		CONNECT BY PRIOR T1.BNO = T1.PARENT_BNO
+		) T2 
+			WHERE 1=1
+		     <include refid="search"></include>
+		<!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
+	</select>
+	
+	<!-- 게시물 검색(동적 쿼리 sql문) -->
+	<sql id="search">
+		<if test="searchType != null">
+			<if test='"t".equals(searchType)'>AND TITLE LIKE '%' || #{keyword} || '%' AND DELETE_YN = 'N'</if>
+			<if test='"c".equals(searchType)'>AND CONTENT LIKE '%' || #{keyword} || '%' AND DELETE_YN = 'N'</if>
+			<if test='"w".equals(searchType)'>AND WRITER LIKE '%' || #{keyword} || '%' AND DELETE_YN = 'N'</if>
+			<if test='"tc".equals(searchType)'>AND (TITLE LIKE '%' || #{keyword} || '%' or CONTENT LIKE '%' || #{keyword} || '%') AND DELETE_YN = 'N'</if>
+				
+			<!-- <if test='"tc".equals(searchType)'>AND (TITLE LIKE '%' || #{keyword} || '%' or CONTENT LIKE '%' || #{keyword} || '%')</if> 
+				(TITLE LIKE '%' || #{keyword} || '%') or (CONTENT LIKE '%' || #{keyword} || '%') -이렇게 걸면 안 됨
+			-->
+	 	</if>
+	</sql>
+	
+	<!-- 게시물 조회 -->
+	<select id="read" parameterType="int" resultType="kr.co.vo.BoardVO">
+		SELECT BNO
+			  , TITLE
+			  , CONTENT
+			  , WRITER
+			  , REGDATE
+			  , DEPTH AS DEPTH
+			  , DEPTH+1 AS NEXTDEPTH
+		 FROM MP_BOARD
+		 WHERE BNO = #{bno}
+	</select>
+	
+	
+	<!-- 게시물 업데이트 -->
+	 <update id="update" parameterType="kr.co.vo.BoardVO">
+		UPDATE MP_BOARD
+		   SET TITLE    =   #{title},
+		   	   CONTENT  =   #{content}
+		 WHERE BNO = #{bno} 
+	</update>
+	
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete" parameterType="int">
+		UPDATE MP_BOARD SET
+		 DELETE_YN = 'Y'
+		 WHERE BNO = #{bno}
+	</delete>
+	
+	<!-- 	DELETE 
+		  FROM MP_BOARD
+		 WHERE BNO = #{bno}
+		 
+		 DELETE T1
+			FROM MP_BOARD AS T1 
+			INNER JOIN MP_REPLY AS T2
+			WHERE T1.BNO = T2.BNO 
+ -->
+	
+	<!-- pw check -->
+	<select id="pwcheck" resultType="kr.co.vo.BoardVO"  parameterType="int">
+		SELECT PW
+			FROM MP_BOARD
+		WHERE BNO = #{bno}
+	</select>
+	
+	
+	<!-- FILE 업로드 -->
+	<insert id="insertFile" parameterType="hashMap">
+		INSERT INTO MP_FILE(
+			FILE_NO,
+			BNO,
+			ORG_FILE_NAME,
+			STORED_FILE_NAME,
+			FILE_SIZE
+		)VALUES(
+			SEQ_MP_FILE_NO.NEXTVAL,
+			#{bno},
+			#{org_file_name},
+			#{stored_file_name},
+			#{file_size}
+		)
+    </insert>
+    
+	<!-- 첨부파일 조회 -->
+    <select id="selectFileList" parameterType="int" resultType="hashMap">
+    	SELECT file_no,
+    		   org_file_name,
+    		   ROUND(FILE_SIZE/1024,1) AS file_size,
+    		   del_gb
+    	  FROM mp_file
+    	 WHERE bno= #{bno}
+    	   AND del_gb= 'N'
+    	 ORDER BY file_no ASC
+    </select>
+    
+    <!-- 첨부파일 다운 -->
+    <select id="selectFileInfo" parameterType="hashMap" resultType="hashMap">
+    	SELECT 
+    		STORED_FILE_NAME,
+    		ORG_FILE_NAME
+    	FROM MP_FILE
+    	WHERE FILE_NO = #{FILE_NO}
+    </select>
+    
+    <!-- update 쿼리를 이용해서 삭제한 파일은 del_gb를 y로 바꿔줌 -->
+    <update id="updateFile" parameterType="hashMap">
+    	UPDATE MP_FILE SET
+    	DEL_GB = 'Y'
+    	WHERE FILE_NO = #{FILE_NO}
+    </update>
+	
+	
+	 <!-- 게시판 리스트 -->
+	<select id="excellist" resultType="kr.co.vo.BoardVO" parameterType="kr.co.vo.SearchCriteria">
+		SELECT T3.*
+		  FROM ( 
+			SELECT CASE WHEN T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0 
+				THEN '=== 원글이 삭제되었습니다. ==='
+                 ELSE T2.TITLE
+                   END AS TITLE_TEMP
+                   , T2.* 
+                   , ROWNUM AS RRNUM
+			  
+			  FROM (
+				SELECT  T1.TITLE,
+				        T1.BNO, 
+				        T1.PARENT_BNO,
+				        T1.SORT,
+				        T1.DEPTH,
+				        T1.CONTENT, 
+				        T1.WRITER, 
+				        T1.REGDATE,
+				        RNUM,
+				        DELETE_YN,
+				        (select count(*) from mp_reply s1 where s1.bno = t1.bno) reply_cnt,
+				        ROWNUM as ORDERNUM
+				  
+				  FROM (
+				     SELECT TITLE, BNO, PARENT_BNO, SORT, DEPTH, CONTENT, WRITER, REGDATE, DELETE_YN,
+				     		ROW_NUMBER() OVER(ORDER BY BNO) AS RNUM,
+				     		(select count(*) from mp_reply s1 where s1.bno = bno) reply_cnt
+				       FROM MP_BOARD
+				      
+				  ) T1
+				  
+				START WITH T1.PARENT_BNO = 0
+				CONNECT BY PRIOR T1.BNO = T1.PARENT_BNO
+				ORDER SIBLINGS BY SORT DESC
+		  	 ) T2
+		  	 		WHERE 1=1
+				    <include refid="search" />
+		  	 <!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
+		  ) T3
+		</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+</mapper>

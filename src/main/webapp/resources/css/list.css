@@ -1,0 +1,18 @@
+
+/* 글자체 */
+body{
+        line-height:2em;        
+        font-family:"맑은 고딕";
+}
+
+
+.mainWrapper{
+     width: 800px;
+     margin: 0 auto; /*가운데 정렬*/
+}
+
+textarea{
+	width:766px; 
+	height:315px; 
+    resize:none; /* 크기고정 */ 
+}
