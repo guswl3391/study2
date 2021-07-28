@@ -248,12 +248,35 @@
 
 			const tr_fileAdd_btn = document.getElementById('tr_fileAdd_btn');
 
-        	tr_fileAdd_btn.insertAdjacentHTML('beforebegin', `
-        	<tr>
-					<td>
+        	tr_fileAdd_btn.insertAdjacentHTML(
+        			'beforebegin', `
+        			<tr>
+						<td>
+							<input type="file" name="file[]"/>
+							<button onclick="fn_removeFile(this);">삭제</button>
+						</td>
+					</tr>
+			`);
+        }
+        
+        
+        // 참고용
+        /*
+			<tr>
+				<td>
+					<label for="file">첨부 파일</label>
+					<br/>
 					<input type="file" name="file[]"/>
+					<button onclick="fn_removeFile(this);">삭제</button>
 				</td>
-			</tr>`);
+			</tr>
+        */
+        function fn_removeFile(buttonObject) {
+        	const td = buttonObject.parentElement;
+        	const tr = td.parentElement;
+        	tr.remove();
+        	
+        	fn_addFile_count--;
         }
         
 	</script>
@@ -318,13 +341,16 @@
 									<input type="file" name="file[]"/>
 								</td>
 							</tr>
-<!-- 							<tr> -->
-<!-- 								<td> -->
-<!-- 									<label for="file">첨부 파일</label> -->
-<!-- 									<br/> -->
-<!-- 									<input type="file" name="file[]"/> -->
-<!-- 								</td> -->
-<!-- 							</tr>			 -->
+							<!--
+								<tr>
+									<td>
+										<label for="file">첨부 파일</label>
+										<br/>
+										<input type="file" name="file[]"/>
+										<button onclick="fn_removeFile(this);">삭제</button>
+									</td>
+								</tr>
+							 -->		
 
 <!-- 							<tr id="fileIndexTr"> -->
 <!-- 									<td id="fileIndex"> -->

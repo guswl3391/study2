@@ -21,10 +21,6 @@ public class Criteria {
 	}
 	
 	public void setPerPageNum(int perPageNum) {  
-		if (perPageNum <= 0 || perPageNum > 100) { //안전 장치 의도되지 않은 상황이 발생할 수 있으므로 걸어둠
-			this.perPageNum = 10; // 
-			return;
-		}
 		this.perPageNum = perPageNum;
 	}
 	

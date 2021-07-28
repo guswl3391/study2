@@ -42,46 +42,58 @@
 
 	 <!-- 게시판 리스트 -->
 	<select id="list" resultType="kr.co.vo.BoardVO" parameterType="kr.co.vo.SearchCriteria">
-		SELECT T3.*
-		  FROM ( 
-			SELECT CASE WHEN T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0 
-				THEN '=== 원글이 삭제되었습니다. ==='
-                 ELSE T2.TITLE
-                   END AS TITLE_TEMP
-                   , T2.* 
-                   , ROWNUM AS RRNUM
-			  
-			  FROM (
-				SELECT  T1.TITLE,
-				        T1.BNO, 
-				        T1.PARENT_BNO,
-				        T1.SORT,
-				        T1.DEPTH,
-				        T1.CONTENT, 
-				        T1.WRITER, 
-				        T1.REGDATE,
-				        RNUM,
-				        DELETE_YN,
-				        (select count(*) from mp_reply s1 where s1.bno = t1.bno) reply_cnt,
-				        ROWNUM as ORDERNUM
+		SELECT T4.*, NVL(U.bno2, 0) as bno2
+		FROM
+		(
+			SELECT T3.*, ROWNUM as RRNUM
+			  FROM ( 
+				SELECT CASE WHEN T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0 
+					THEN '=== 원글이 삭제되었습니다. ==='
+	                 ELSE T2.TITLE
+	                   END AS TITLE_TEMP
+	                   , T2.*
 				  
 				  FROM (
-				     SELECT TITLE, BNO, PARENT_BNO, SORT, DEPTH, CONTENT, WRITER, REGDATE, DELETE_YN,
-				     		ROW_NUMBER() OVER(ORDER BY BNO) AS RNUM,
-				     		(select count(*) from mp_reply s1 where s1.bno = bno) reply_cnt
-				       FROM MP_BOARD
-				      
-				  ) T1
-				  
-				START WITH T1.PARENT_BNO = 0
-				CONNECT BY PRIOR T1.BNO = T1.PARENT_BNO
-				ORDER SIBLINGS BY SORT DESC
-		  	 ) T2
-		  	 		WHERE 1=1
-				    <include refid="search" />
-		  	 <!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
-		  ) T3
-		  WHERE T3.ORDERNUM BETWEEN #{rowStart} AND #{rowEnd}
+					SELECT  T1.TITLE,
+					        T1.BNO, 
+					        T1.PARENT_BNO,
+					        T1.SORT,
+					        T1.DEPTH,
+					        T1.CONTENT, 
+					        T1.WRITER, 
+					        T1.REGDATE,
+					        RNUM,
+					        DELETE_YN,
+					        (select count(*) from mp_reply s1 where s1.bno = t1.bno) reply_cnt
+					  
+					  FROM (
+					     SELECT TITLE, BNO, PARENT_BNO, SORT, DEPTH, CONTENT, WRITER, REGDATE, DELETE_YN,
+					     		ROW_NUMBER() OVER(ORDER BY BNO) AS RNUM,
+					     		(select count(*) from mp_reply s1 where s1.bno = bno) reply_cnt
+					       FROM MP_BOARD
+					      
+					  ) T1
+					  
+					START WITH T1.PARENT_BNO = 0
+					CONNECT BY PRIOR T1.BNO = T1.PARENT_BNO
+					ORDER SIBLINGS BY SORT DESC
+			  	 ) T2
+			  ) T3
+			  WHERE 1=1
+			  <include refid="search" />
+			  <!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
+		  ) T4
+		  LEFT JOIN
+			(
+			    SELECT
+			        bno,
+			        ROW_NUMBER() OVER (ORDER BY bno ASC) as bno2
+			    FROM
+			        mp_board
+			    WHERE
+			        parent_bno = 0
+			) U on U.bno = T4.bno
+		  WHERE T4.RRNUM BETWEEN #{rowStart} AND #{rowEnd}
 	</select>
 	
 <!-- 	
@@ -166,6 +178,14 @@
 		   	   CONTENT  =   #{content}
 		 WHERE BNO = #{bno} 
 	</update>
+	
+	
+	<!-- 게시판 첨부 파일 삭제-->
+	<delete id="deleteFile" parameterType="int">
+		 DELETE 
+		 FROM mp_file 
+		 WHERE file_no = #{file_no}
+	</delete>
 	
 	
 	<!-- 게시물 삭제 -->

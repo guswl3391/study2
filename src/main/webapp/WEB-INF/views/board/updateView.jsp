@@ -125,26 +125,52 @@ function cancle_btn(){
 				
 			});
 		}
-		var fileNoArry = new Array();
-		var fileNameArry = new Array();
 		
-		function fn_del(value, name){
+	  	// function fn_del(value, name){
+  		function fn_del(buttonObject) {
 			//삭제 버튼을 눌렀을 때, 파일이 삭제 되기를 원함
 			//파일이 삭제된다는 것은 db에서 없애야 한다는 것-> 서버와의 통신이 필요 
 			//이용자는 다시 파일 첨부라는 버튼이 보여야 함 -> 페이지가 새로고침 되면 안 된다 -> submit으로 하면 안 됨 --> ajax로 해야 함
 			//ajax로 해야 한다는 것은 여기서 화면도 js로 다시 그려줘야 한다는 것임
 			//submit하면 jsp로 하면 됨 하지만 ajax로 하면 화면 변화 하나하나 다 내가 그려줘야 함
 			
-			fileNoArry.push(value);
-			fileNameArry.push(name);
-			$("#fileNoDel").attr("value", fileNoArry);
-			$("#fileNameDel").attr("value", fileNameArry);
-			
+			// 1. 화면 처리
+  			const div = buttonObject.parentElement;
+  			div.remove();
+  			
+  			// 2. 서버 처리
+  			// 참고: delete from mp_file where file_no = 35; // 이렇게 실제로 회사에서 주석으로 SQL문 놓으면 완전 큰일난다! -> 고객이 보면 안 되니까 
+  			const file_no = buttonObject.getAttribute('data-file-no');
+  			// console.log({file_no});
+  			// ajax 호출에서 가장 주의해야 할 것 -> 고객이 request, response를 얼마든지 볼 수 있다. -> 인증 처리, 권한 처리가 중요하다!
+  			
+  			const form = new FormData();
+  			form.append("file_no", file_no);
+
+  			var settings = {
+  			  "url": "/board/deleteFile",
+  			  "method": "POST",
+  			  "timeout": 0,
+  			  "processData": false,
+  			  "mimeType": "multipart/form-data",
+  			  "contentType": false,
+  			  "data": form
+  			};
+
+  			$.ajax(settings).done(function (response) {
+  			  const isSuccess = (response == "true");
+  			  if (isSuccess) {
+  				  alert('삭제 되었습니다.');
+  				  
+  			  } else {
+  				  alert('서버에서 문제가 발생 하였습니다.');
+  			  }
+  			});
 		}
 
 		
 		
-		let fn_addFile_count = 1;
+		let fn_addFile_count = <c:out value="${file.size()}"/>;
         function fn_addFile(){
 			if (fn_addFile_count >= 5) {
 				alert('파일 첨부는 5개까지 가능합니다.');
@@ -156,12 +182,27 @@ function cancle_btn(){
 			const tr_fileAdd_btn = document.getElementById('tr_fileAdd_btn');
 
         	tr_fileAdd_btn.insertAdjacentHTML('beforebegin', 
-        	`
-        	<tr>
-					<td>
-					<input type="file" name="file[]"/>
-				</td>
-			</tr>`);
+	        	`<tr>
+						<td>
+						<input type="file" name="file[]" onchange="fn_changeFile(this);" />
+					</td>
+				</tr>
+			`);
+        }
+        
+        function fn_changeFile(inputObject) {
+        	const isValidate = (inputObject.files.length > 0); // 0: onchange는 일어났지만, 파일은 들어오지 않았다.
+        	if (isValidate == false) {
+        		return false; // early return
+        	}
+        	
+        	const bytes = inputObject.files[0].size;
+        	const maxUploadSize = 100000000; // =100MB
+        	// https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch16s08.html
+        	if (maxUploadSize <= bytes) {
+        		alert("파일 크기가 너무 큽니다.");
+        		inputObject.value = '';
+        	}
         }
         
 		
@@ -195,7 +236,7 @@ function cancle_btn(){
 			
 			
 			<section id="container">
-				<form role="form" name="form" method="post" action="/board/update">
+				<form role="form" name="form" method="post" action="/board/update" enctype="multipart/form-data">
 					<%-- <input type="hidden" name="uuid" value="${update.uuid}" readonly="readonly"/> --%>
 					<input type="hidden" name="bno" value="${update.bno}" readonly="readonly"/>
 					<input type="hidden" id="fileNoDel" name="fileNoDel[]" value=""> 
@@ -228,7 +269,9 @@ function cancle_btn(){
 										<input type="hidden" id="FILE_NO" name="FILE_NO_${var.index}" value="${file.FILE_NO }">
 										<input type="hidden" id="FILE_NAME" name="FILE_NAME" value="FILE_NO_${var.index}">
 										<a href="#" id="fileName" onclick="return false;">${file.ORG_FILE_NAME}</a>(${file.FILE_SIZE}kb)
-										<button id="fileDel" onclick="fn_del('${file.FILE_NO}','FILE_NO_${var.index}');" type="button">삭제</button><br>
+<%-- 										<button id="fileDel" onclick="fn_del('${file.FILE_NO}','FILE_NO_${var.index}');" type="button">삭제</button> --%>
+										<button onclick="fn_del(this);" data-file-no="${file.FILE_NO}" type="button">삭제</button>
+										<br>
 									</div>
 									</c:forEach>
 								</td>

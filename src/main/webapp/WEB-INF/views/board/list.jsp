@@ -176,7 +176,10 @@
 						<c:forEach items="${list}" var = "list">
 
 							<tr >
-								<td style="text-align: center;"><c:out value="${totalCount - list.rrnum + 1}" /></td>
+								<td style="text-align: center;">
+<%-- 									<c:out value="${(list.bno2 > 0) ? list.bno2 : '▶'}" /> --%>
+									<c:out value="${list.bno2}" />
+								</td>
 								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
 								<td style="text-align: left;">
 									<!-- 원글 -->

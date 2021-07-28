@@ -51,6 +51,12 @@ public class BoardDAOImpl implements BoardDAO {
 
 		sqlSession.update("boardMapper.update", boardVO);
 	}
+	
+	// 게시판 첨부 파일 삭제
+	@Override
+	public int deleteFile(int file_no) throws Exception {
+		return sqlSession.delete("boardMapper.deleteFile", file_no);
+	}
 
 	// 게시물 삭제
 	@Override

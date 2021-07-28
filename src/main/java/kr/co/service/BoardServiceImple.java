@@ -65,23 +65,29 @@ public class BoardServiceImple implements BoardService {
 
 	// 게시물 업데이트
 	@Override
-	public void update(BoardVO boardVO, String[] files, String[] fileNames, MultipartHttpServletRequest mpRequest) throws Exception {
-
+	public void update(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception {
+	
 		dao.update(boardVO);
 		
-		
-		List<Map<String, Object>> list = fileUtils.parseUpdateFileInfo(boardVO, files, fileNames, mpRequest);
+		List<Map<String, Object>> list = fileUtils.parseUpdateFileInfo(boardVO, mpRequest);
 		Map<String, Object> tempMap = null;
 		int size = list.size();
 		for(int i = 0; i<size; i++) {
 			tempMap = list.get(i);
-			if(tempMap.get("IS_NEW").equals("Y")) {
+			if(tempMap.get("is_new").equals("Y")) {
 				dao.insertFile(tempMap);
 			}else {
 				dao.updateFile(tempMap);
 			}
 		}
 		
+	}
+	
+	// 게시판 첨부 파일 삭제
+	@Override
+	public boolean deleteFile(int file_no) throws Exception {
+		int result = dao.deleteFile(file_no);
+		return true;
 	}
 
 	// 게시물 삭제

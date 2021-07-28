@@ -5,6 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.co.vo.BoardVO;
@@ -25,13 +28,17 @@ public interface BoardService {
 		
 		// 게시물 조회
 		public BoardVO read(int bno) throws Exception;
+		
+		// 게시판 첨부 파일 삭제
+		public boolean deleteFile(int file_no) throws Exception;
 
 		/*
 		 * 게시물 수정 public void update(BoardVO boardVO) throws Exception;
 		 */
 		
 		// 게시물 수정
-		public void update(BoardVO boardVO, String[] files, String[] fileNames, MultipartHttpServletRequest mpRequest) throws Exception;
+		// public void update(BoardVO boardVO, String[] files, String[] fileNames, MultipartHttpServletRequest mpRequest) throws Exception;
+		public void update(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception;
 		
 		// 게시물 삭제
 		public void delete(ReplyVO replyVO) throws Exception;	

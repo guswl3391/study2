@@ -57,7 +57,10 @@ public class BoardController {
 	
 	// 게시판 글 작성
 	@RequestMapping(value = "/board/write", method = {RequestMethod.GET, RequestMethod.POST})
-	public String write(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception{
+	public String write(
+			BoardVO boardVO,
+			MultipartHttpServletRequest mpRequest
+		) throws Exception{
 		logger.info("write");
 		
 		/*
@@ -106,7 +109,7 @@ public class BoardController {
 		
 		model.addAttribute("list", service.list(scri));
 		int totalCount = service.listCount(scri);
-		model.addAttribute("totalCount", totalCount); //ordernum 정렬 떄문에 만들었음
+		// model.addAttribute("totalCount", totalCount); //ordernum 정렬 떄문에 만들었음 // bno2가 있어서 이제는 필요가 없다!
 		
 		
 			
@@ -166,22 +169,31 @@ public class BoardController {
 		
 	// 게시판 수정
 		@RequestMapping(value = "/update", method = RequestMethod.POST)
-		public String update(BoardVO boardVO, 
-							 @ModelAttribute("scri") SearchCriteria scri, 
-							 RedirectAttributes rttr,
-							 @RequestParam(value="fileNoDel[]") String[] files,
-							 @RequestParam(value="fileNameDel[]") String[] fileNames,
-							 MultipartHttpServletRequest mpRequest) throws Exception {
+		public String update(
+				BoardVO boardVO, 
+//				 @ModelAttribute("scri") SearchCriteria scri, 
+//				 RedirectAttributes rttr,
+				 MultipartHttpServletRequest mpRequest
+			 ) throws Exception {
 			logger.info("update");
-			service.update(boardVO, files, fileNames, mpRequest);
+			service.update(boardVO, mpRequest);
 
-			rttr.addAttribute("page", scri.getPage());
-			rttr.addAttribute("perPageNum", scri.getPerPageNum());
-			rttr.addAttribute("searchType", scri.getSearchType());
-			rttr.addAttribute("keyword", scri.getKeyword());
-
+//			rttr.addAttribute("page", scri.getPage());
+//			rttr.addAttribute("perPageNum", scri.getPerPageNum());
+//			rttr.addAttribute("searchType", scri.getSearchType());
+//			rttr.addAttribute("keyword", scri.getKeyword());
+//
+//			return "redirect:/board/list";
 			return "redirect:/board/list";
 		}
+		
+	// 게시판 첨부 파일 삭제
+	@RequestMapping(value = "/deleteFile",  method = {RequestMethod.POST})
+	@ResponseBody
+	public boolean deleteFile(int file_no) throws Exception {
+		boolean result = service.deleteFile(file_no);
+		return result;
+	}
 		
 	// 게시판 삭제
 	@RequestMapping(value = "/delete",  method = {RequestMethod.GET, RequestMethod.POST})
@@ -451,7 +463,10 @@ public class BoardController {
 	}
 	
 	@GetMapping("/excel/download")
-    public void excelDownload(HttpServletResponse response, @ModelAttribute("scri") SearchCriteria scri) throws Exception {
+    public void excelDownload(
+    		HttpServletResponse response 
+    		// @ModelAttribute("scri") SearchCriteria scri
+		) throws Exception {
 //        Workbook wb = new HSSFWorkbook();
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("첫번째 시트");
@@ -479,10 +494,13 @@ public class BoardController {
         cell = row.createCell(3);
         cell.setCellValue("등록일");
         
-        //SearchCriteria scri = new SearchCriteria();
-        List<BoardVO> list = service.excelList(scri);
+       SearchCriteria scri = new SearchCriteria();
+       scri.setPerPageNum(10000);
+       
+        // List<BoardVO> list = service.excelList(scri);
+       List<BoardVO> list = service.list(scri);
         
-        int totalCount = service.listCount(scri);
+        // int totalCount = service.listCount(scri);
        
 		/* String delete_yn = */
        
@@ -492,10 +510,18 @@ public class BoardController {
 		 */
         // Body
         for (BoardVO boardVO : list) {
+        	// boolean isDeleted = (boardVO.getDelete_yn().equals("Y"));
+        	// boolean isDeleted = ("Y".equals(boardVO.getDelete_yn()));
+        	boolean isDeleted = boardVO.isDeleted();
+        	if (isDeleted) {
+        		continue; //early return
+        	}
+        	
             row = sheet.createRow(rowNum++);
             
             cell = row.createCell(0);
-            cell.setCellValue(totalCount - boardVO.getRrnum() + 1); // ${totalCount - list.rrnum + 1}
+            // cell.setCellValue(totalCount - boardVO.getRrnum() + 1); // ${totalCount - list.rrnum + 1}
+            cell.setCellValue(boardVO.getBno2());
             
             cell = row.createCell(1);
             cell.setCellValue(boardVO.getTitle()); //${'Y' eq list.delete_yn && 0 eq list.parent_bno}

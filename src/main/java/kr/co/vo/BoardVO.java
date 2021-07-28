@@ -4,8 +4,9 @@ import java.util.Date;
 
 public class BoardVO {
 
-	//private String uuid;
+	// private String uuid;
 	private int bno;
+	private int bno2; //정렬 위해서 만들었음 boardMapper 참고 NVL(U.bno2, 0) as bno2
 	private int parent_bno;
 	private int depth;
 	private int nextdepth;
@@ -21,29 +22,19 @@ public class BoardVO {
 	private String boardYN;
 	private int ordernum;
 	private int rrnum;
-	
+
 	public BoardVO() {
 		super();
 	}
 
 	
 
-	
-	
-	
-
-	
-
-
-
-
-
-
-	public BoardVO(int bno, int parent_bno, int depth, int nextdepth, int sort, String title, String content,
+	public BoardVO(int bno, int bno2, int parent_bno, int depth, int nextdepth, int sort, String title, String content,
 			String writer, String pw, Date regdate, int rnum, int reply_cnt, String delete_yn, String boardYN,
 			int ordernum, int rrnum) {
 		super();
 		this.bno = bno;
+		this.bno2 = bno2;
 		this.parent_bno = parent_bno;
 		this.depth = depth;
 		this.nextdepth = nextdepth;
@@ -63,70 +54,30 @@ public class BoardVO {
 
 
 
+	// public int getBno2() {
+	public String getBno2() {
+		return (bno2 > 0) ? Integer.toString(bno2) : "▶"; // 모델 안에서 뷰의 처리를 하고 있다! // 예외상황: 뷰의 종류가 하나 더 있을 경우
+	}
 
-
-
-
-
-
-
-
-
-
+	public void setBno2(int bno2) {
+		this.bno2 = bno2;
+	}
 
 	public int getRrnum() {
 		return rrnum;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setRrnum(int rrnum) {
 		this.rrnum = rrnum;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	public int getOrdernum() {
 		return ordernum;
 	}
 
-
-
-
-
-
-
 	public void setOrdernum(int ordernum) {
 		this.ordernum = ordernum;
 	}
-
-
-
-
-
-
 
 	public String getDelete_yn() {
 		return delete_yn;
@@ -148,11 +99,9 @@ public class BoardVO {
 		return reply_cnt;
 	}
 
-
 	public void setReply_cnt(int reply_cnt) {
 		this.reply_cnt = reply_cnt;
 	}
-
 
 	public int getNextdepth() {
 		return nextdepth;
@@ -244,32 +193,17 @@ public class BoardVO {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	@Override
 	public String toString() {
-		return "BoardVO [bno=" + bno + ", parent_bno=" + parent_bno + ", depth=" + depth + ", nextdepth=" + nextdepth
-				+ ", sort=" + sort + ", title=" + title + ", content=" + content + ", writer=" + writer + ", pw=" + pw
-				+ ", regdate=" + regdate + ", rnum=" + rnum + ", reply_cnt=" + reply_cnt + ", delete_yn=" + delete_yn
-				+ ", boardYN=" + boardYN + ", ordernum=" + ordernum + ", rrnum=" + rrnum + "]";
+		return "BoardVO [bno=" + bno + ", bno2=" + bno2 + ", parent_bno=" + parent_bno + ", depth=" + depth
+				+ ", nextdepth=" + nextdepth + ", sort=" + sort + ", title=" + title + ", content=" + content
+				+ ", writer=" + writer + ", pw=" + pw + ", regdate=" + regdate + ", rnum=" + rnum + ", reply_cnt="
+				+ reply_cnt + ", delete_yn=" + delete_yn + ", boardYN=" + boardYN + ", ordernum=" + ordernum
+				+ ", rrnum=" + rrnum + "]";
 	}
 
-
-
-
-
-
-
-
 	
-	
+	public boolean isDeleted() {
+		return ("Y".equals(delete_yn));
+	}
 }
