@@ -163,6 +163,51 @@
             }
         }
 
+        
+    	let fn_addFile_count = 1;
+        function fn_addFile(){
+// 			var fileIndex = 1;
+			//$("#fileIndex").append("<div><input type='file' style='float:left;' name='file_"+(fileIndex++)+"'>"+"<button type='button' style='float:right;' id='fileAddBtn'>"+"추가"+"</button></div>");
+			
+// 			$(".fileAdd_btn").on("click", function(){
+// 				$("#fileIndex").append("<div><input type='file' style='float:left;' name='file_"+(fileIndex++)+"'>"+"</button>"+"<button type='button' style='float:right;' id='fileDelBtn'>"+"삭제"+"</button></div>");
+// 			});
+			
+// 			$(document).on("click","#fileDelBtn", function(){
+// 				$(this).parent().remove();
+// 			});
+
+			
+			if (fn_addFile_count >= 5) {
+				alert('파일 첨부는 5개까지 가능합니다.');
+				return false;// early return
+			}
+			
+			fn_addFile_count++;
+
+			const tr_fileAdd_btn = document.getElementById('tr_fileAdd_btn');
+
+        	tr_fileAdd_btn.insertAdjacentHTML(
+        			'beforebegin', `
+        			<tr>
+						<td>
+							<input type="file" name="file[]"/>
+							<button onclick="fn_removeFile(this);">삭제</button>
+						</td>
+					</tr>
+			`);
+        }
+        
+        
+        function fn_removeFile(buttonObject) {
+        	const td = buttonObject.parentElement;
+        	const tr = td.parentElement;
+        	tr.remove();
+        	
+        	fn_addFile_count--;
+        }
+        
+        
 	</script>
 
 <meta charset="UTF-8">
@@ -220,6 +265,20 @@
 									<div id="test_cnt">(0 / 1000)</div>
 								</td>
 							</tr>
+							<tr>
+								<td>
+									<label for="file">첨부 파일</label>
+									<br/>
+									<input type="file" name="file[]"/>
+								</td>
+							</tr>
+								<tr id="tr_fileAdd_btn">
+									<td>						
+										<button class="fileAdd_btn" type="button" onclick="fn_addFile()">파일 추가</button>	
+									</td>
+								</tr>	
+							
+							
 							<tr>
 								<td>
 									<label for="writer">작성자</label> <input type="text" id="test02" name="writer" class="chk" maxlength=11 oninput="length(this)" onkeyup="noSpaceForm2(this);" onkeydown="noSpaceForm2(this);" onchange="noSpaceForm2(this);" placeholder="작성자를 입력하세요. 필수 입력 부분입니다." style="width:300px; height:30px;"/>

@@ -63,6 +63,7 @@ public class FileUtils {
 			
 			List<MultipartFile> fileList = mpRequest.getFiles("file[]");
 			
+			System.out.println("fileList: " + fileList.size());
 			for (MultipartFile multipartFile : fileList) {
 				originalFileName = multipartFile.getOriginalFilename();
 				

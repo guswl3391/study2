@@ -1,0 +1,505 @@
+
+    
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<link rel="stylesheet" href="resources/css/list.css?ver=1.3">
+
+<!-- jquery: jquery.com download> -->
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<script type="text/javascript"> 
+
+ 		// 첫 글자 공백만 사용 못 하게
+        //onkeyup="noSpaceForm2(this);" onchange="noSpaceForm2(this);"
+        function noSpaceForm2(obj) 
+        {                        
+            if(obj.value == " ") // 공백 체크
+            {              
+                alert("첫 글자 공백을 사용할 수 없습니다.\n\n공백 제거됩니다.");
+                obj.focus();
+                obj.value = obj.value.replace(' ','');  // 공백 제거
+                return false;
+            }
+        } 
+        
+        
+/*         function check(){
+			var form = document.form;
+			
+    		if(document.form.keyword.value.trim() == ""){
+				alert("키워드는 필수 입력입니다.");
+				return document.form.keyword.focus(); 
+			} 
+        } */
+
+</script>
+
+<meta charset="UTF-8">
+<title>목록</title>
+	<style type="text/css">
+		li {
+			list-style: none; 
+			float: left; 
+			padding: 6px;
+		}
+		
+		.search{
+        	display: inline;
+        	/* margin: 18rem;
+  			padding: 5; */
+   		 }
+   		 
+   		h2 {text-align:center;}
+   		
+   		.paging{
+   			float: left;
+   			width: 90%;
+   			text-align: center;
+   		}
+   		
+   		.paging-body{
+   			display: inline-block;
+   		}
+   		
+/*    		#searchbox{
+   			height: 34px;
+   		}
+   		 */
+		 .inline-block{
+		  display: inline-block;
+		}
+		
+		#mydiv1{
+			  display: inline;
+		}
+
+		.search01{
+			display:inline-block;
+			margin: 0px;
+			padding: 0px;
+		}
+	</style>
+
+</head>
+<body>
+<div id="root" class="container">
+			<br>
+
+			<header>
+				<h2>[LIST]</h2>
+			</header>
+			
+			<br>
+
+			 
+
+
+			
+			<section id="container">
+				<form role="form" name="form" method="get" action="/board/write">
+					
+					<!-- 검색 시작 -->			
+					
+					
+					<div align="right" classs="search01">
+						 
+						<!-- select-box -->
+						<div class="search row" >
+						<div class="" style="display: inline-block;">
+					    <select name="searchType" class="form-control search-slt" style="width: 100px;"  aria-label="Default select example">
+					      
+					      <option selected value="t">제목</option>
+					      <option value="c">내용</option>
+					      <option value="w">작성자</option>
+					      <option value="tc">제목+내용</option>
+					    </select>
+					    </div>
+					
+						<!-- search-box -->
+						<div class="" id="mydiv1" style="display: inline-block;">
+					    <input type="text" name="keyword" id="keywordInput" value=""  placeholder="검색어를 입력하세요." class="form-control search-slt" onkeyup="noSpaceForm2(this);" onkeydown="noSpaceForm2(this);" onchange="noSpaceForm2(this);"/>
+					    </div>
+					    
+					    <!-- search 버튼 + script -->
+					    <div class="" id="mydiv1" style="display: inline-block;">
+					    <!--  <button id="searchBtn" type="button" class="btn btn-danger wrn-btn">검색</button> -->
+					     <input type="button" value="검색" id="searchBtn" class="btn btn-danger wrn-btn" onclick="check()">
+						</div>		    
+						    <script>
+						      $(function(){
+						        $('#searchBtn').click(function() {
+						          self.location = "list" + '?page=1&perPageNum=10' + "&searchType=" + $("select option:selected").val() + "&keyword=" + encodeURIComponent($('#keywordInput').val());
+						        });
+						      });   
+						    </script>
+					  	</div>
+				    </div>	
+				    
+				   
+				   
+				  <br>
+					
+					<div align="center" class="main">
+					<table class="table table-hover" >
+						<colgroup>
+							<col width="60px;">
+							<col width="630px;">
+							<col width="170px;">
+							<col width="95px;">
+						</colgroup>
+										
+						<tr >
+							<th style="text-align: center;">번호</th>
+							<th style="text-align: center;">제목</th>
+							<th style="text-align: center;">작성자</th>
+							<th style="text-align: center;">등록일</th>
+							
+						</tr>
+						
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									5
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=95&rnum=16">원글입니다  <span style="color: gray;">[</span><span style="color: gray;">0</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+									<!-- 답글 -->
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id02
+								</td>
+								<td style="text-align: center;">2021-07-29</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									4
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=92&rnum=13">원글입니다  <span style="color: gray;">[</span><span style="color: gray;">1</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+									<!-- 답글 -->
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id02
+								</td>
+								<td style="text-align: center;">2021-07-29</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+											<span style="color: green; padding-left: 20px;">└ RE: </span>== 답글이 삭제되었습니다. ==</span>
+										
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									답글입니다 - 1
+								</td>
+								<td style="text-align: center;">2021-07-29</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+											<span style="color: green; padding-left: 20px;">└ RE: </span>== 답글이 삭제되었습니다. ==</span>
+										
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									dsdf
+								</td>
+								<td style="text-align: center;">2021-07-29</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									3
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+										
+											<span>== 원글이 삭제되었습니다. ==</span>
+										
+										
+									
+									
+									
+									<!-- 답글 -->
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id00
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+											<span style="color: green; padding-left: 20px;">└ RE: </span>== 답글이 삭제되었습니다. ==</span>
+										
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id05
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=13&rnum=12&parent_bno=12">
+											<span style="color: green; padding-left: 30px;">└ RE: </span>답글입니다 - 3 - 1 박태환 기록 넘었다…황선우, &#039;전체 1위&#039;로 올림픽 준결승행 박태   <span style="color: gray;">[</span><span style="color: gray;">1</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id02
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=9&rnum=8&parent_bno=5">
+											<span style="color: green; padding-left: 20px;">└ RE: </span>답글입니다 - 2   <span style="color: gray;">[</span><span style="color: gray;">3</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id93
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=11&rnum=10&parent_bno=9">
+											<span style="color: green; padding-left: 30px;">└ RE: </span>답글입니다 - 2 - 1 오늘부터 50대 일반인 617만 명 접종…대상자 84% 사전예약    <span style="color: gray;">[</span><span style="color: gray;">0</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id01
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+
+							<tr >
+								<td style="text-align: center;">
+
+									▶
+								</td>
+								<!-- 전체 글의 수 - LIST.ORDERNUM(결국 ROWNUM) +1 -> 1을 더하는 이유는 전체 게시글 - ROWNUM을 하면 0이 되니까, 글은 1부터 시작해야 하므로 +1을 해 줌 -->
+								<td style="text-align: left;">
+									<!-- 원글 -->
+									
+									
+									<!-- 답글 -->
+									
+									
+										
+										
+											<a href="/board/readView?bno=7&rnum=6&parent_bno=5">
+											<span style="color: green; padding-left: 20px;">└ RE: </span>답글입니다 - 1   <span style="color: gray;">[</span><span style="color: gray;">0</span><span style="color: gray;">]</span></a>
+										
+									
+									
+									
+								</td>
+								<td style="text-align: center;">
+									id03
+								</td>
+								<td style="text-align: center;">2021-07-26</td>
+							</tr>
+						
+						
+					</table>
+				
+					</div>
+					
+					<br>
+					
+					<!-- 페이징 시작 -->
+					
+					
+					<div class="search" align="right">
+<!-- 						<form action="/excel" method="post"> -->
+				            <input type="button" onclick="location.href='/board/excel/download?page=1&perPageNum=10&searchType=&keyword=';" class="replyUpdateBtn btn btn-warning" value="Excel"/>
+<!-- 				    	</form>  -->
+						<input type="button" value="목록" onClick="location.href='/board/list'" class="btn btn-danger wrn-btn">
+						<input type="button" value="글쓰기" onClick="location.href='/board/writeView'" class="btn btn-danger wrn-btn">	 
+					</div>
+					
+					<div class="paging">
+						<div class="paging-body">
+							<div class="text-center mt-5 mb-5">
+						 	<ul class="pagination">
+		                       	<li><a href="list?page=1&perPageNum=10&searchType=&keyword=">[처음]</a></li> 
+		                       	<!-- list?page=1&perPageNum=10&searchType=&keyword= -->
+		                       	<!-- list?page=1&perPageNum=10&searchType=t&keyword=%EC%9C%84%ED%95%9C -->
+		                       	<li><a href="list?page=1&perPageNum=10&searchType=&keyword=">[이전]</a></li>
+							    
+							    
+							    	<li><a href="list?page=1&perPageNum=10&searchType=&keyword="> 1</a></li>
+							    
+							    	<li><a href="list?page=2&perPageNum=10&searchType=&keyword="> 2</a></li>
+							    
+							
+						    	<li><a href="list?page=2&perPageNum=10&searchType=&keyword=">[다음]</a></li>
+						    	<li><a href="list?page=2&perPageNum=10&searchType=&keyword=">[끝]</a></li> 
+						    	<!-- list?page=13&perPageNum=10&searchType=t&keyword=%EC%9C%84%ED%95%9C -->
+	                 		</ul>
+	                 		</div>
+						</div>
+					</div>
+					
+
+				</form>
+			</section>
+			<hr />
+		</div>
+	</body>
+</html>
+ 

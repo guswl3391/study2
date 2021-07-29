@@ -474,7 +474,11 @@ public class BoardController {
         Cell cell = null;
         int rowNum = 0;
         
-        sheet.setDefaultColumnWidth(15); // sheet 너비
+        
+        //sheet 컬럼마다 너비 구하기 excel poi - index는 0부터 시작함
+        sheet.setColumnWidth(1, 24000); //제목 셀 길게 하기 위함
+        sheet.setColumnWidth(3, 3000); //등록일 셀 다 안 보여서 조금 늘림
+        //sheet.setDefaultColumnWidth(20); // sheet 전체 고정 너비 구하기
         
 		/*
 		 * //poi cellstyle 기능이긴 한데,, 안 됨 ㅠ CellStyle mergeRowStyle1 =
@@ -508,6 +512,8 @@ public class BoardController {
 		 * cell = row.createCell(1); 
 		 * cell.setCellValue(new Date());
 		 */
+       
+       
         // Body
         for (BoardVO boardVO : list) {
         	// boolean isDeleted = (boardVO.getDelete_yn().equals("Y"));
@@ -543,7 +549,7 @@ public class BoardController {
         // 컨텐츠 타입과 파일명 지정
         response.setContentType("ms-vnd/excel");
         // response.setHeader("Content-Disposition", "attachment;filename=example.xls");
-        response.setHeader("Content-Disposition", "attachment;filename=list.xlsx");
+        response.setHeader("Content-Disposition", "attachment;filename=excelList.xlsx");
 
         // Excel File Output
         wb.write(response.getOutputStream());

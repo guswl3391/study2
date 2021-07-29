@@ -114,7 +114,7 @@ function cancle_btn(){
 	  */
 	 
 	 
-	  function fn_addFile(){
+	  /* function fn_addFile(){
 			var fileIndex = 1;
 			//$("#fileIndex").append("<div><input type='file' style='float:left;' name='file_"+(fileIndex++)+"'>"+"<button type='button' style='float:right;' id='fileAddBtn'>"+"추가"+"</button></div>");
 			$(".fileAdd_btn").on("click", function(){
@@ -125,7 +125,7 @@ function cancle_btn(){
 				
 			});
 		}
-		
+		 */
 	  	// function fn_del(value, name){
   		function fn_del(buttonObject) {
 			//삭제 버튼을 눌렀을 때, 파일이 삭제 되기를 원함
@@ -200,7 +200,7 @@ function cancle_btn(){
         	const maxUploadSize = 100000000; // =100MB
         	// https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch16s08.html
         	if (maxUploadSize <= bytes) {
-        		alert("파일 크기가 너무 큽니다.");
+        		alert("100MB 이하의 파일만 첨부가 가능합니다.");
         		inputObject.value = '';
         	}
         }
@@ -263,6 +263,15 @@ function cancle_btn(){
 								</td>
 							</tr>
 							<tr>
+								<td>
+									<label for="content">내용</label>
+									<br/>
+									<textarea id="test" name="content" placeholder="내용을 입력하세요. 필수 입력 부분입니다." maxlength=4001 style="width:800px;"><c:out value="${update.content}" /></textarea>
+									 <!-- onkeydown="resize(this)" onkeyup="resize(this)"  -->
+									<div id="test_cnt">(0 / 1000)</div>
+								</td>
+							</tr>
+							<tr>
 								<td id="fileIndex">
 									<c:forEach var="file" items="${file}" varStatus="var">
 									<div>
@@ -282,15 +291,10 @@ function cancle_btn(){
 								</td>
 							</tr>	
 							
-							<tr>
-								<td>
-									<label for="content">내용</label>
-									<br/>
-									<textarea id="test" name="content" placeholder="내용을 입력하세요. 필수 입력 부분입니다." maxlength=4001 style="width:800px;"><c:out value="${update.content}" /></textarea>
-									 <!-- onkeydown="resize(this)" onkeyup="resize(this)"  -->
-									<div id="test_cnt">(0 / 1000)</div>
-								</td>
-							</tr>
+							
+							
+							
+							
 							<tr>
 								<td>
 									<label for="writer"></label>
