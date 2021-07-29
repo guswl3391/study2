@@ -161,8 +161,18 @@ public class BoardVO {
 		this.bno = bno;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getTitle() {  // 모델 안에서 뷰의 처리를 하고 있다! // 예외상황: 뷰의 종류가 하나 더 있을 경우 // 문제: list가 아니라 상세에서도 같은 모델을 보는 다른 뷰가 있었음 -> 여기서 모델을 조회해 오는 곳이 달랐다 -> 
+		if ("N".equals(delete_yn)) {
+			return title;
+			
+		} else { // 삭제 
+			if (parent_bno == 0) { // 원글
+				return "== 원글이 삭제되었습니다. ==";
+				
+			} else { // 답글
+				return "== 답글이 삭제되었습니다. ==";
+			}
+		}
 	}
 
 	public void setTitle(String title) {

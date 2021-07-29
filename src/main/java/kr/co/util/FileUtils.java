@@ -64,6 +64,7 @@ public class FileUtils {
 			List<MultipartFile> fileList = mpRequest.getFiles("file[]");
 			
 			System.out.println("fileList: " + fileList.size());
+			
 			for (MultipartFile multipartFile : fileList) {
 				originalFileName = multipartFile.getOriginalFilename();
 				
@@ -93,28 +94,57 @@ public class FileUtils {
 			MultipartHttpServletRequest mpRequest
 		) throws Exception{ 
 		Iterator<String> iterator = mpRequest.getFileNames();
-		MultipartFile multipartFile = null; 
+//		MultipartFile multipartFile = null; 
 		String originalFileName = null; 
 		String originalFileExtension = null; 
 		String storedFileName = null; 
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		Map<String, Object> listMap = null; 
 		int bno = boardVO.getBno();
+		
 		while(iterator.hasNext()){ 
-			multipartFile = mpRequest.getFile(iterator.next()); 
-			if(multipartFile.isEmpty() == false){ 
-				originalFileName = multipartFile.getOriginalFilename(); 
-				originalFileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")); 
-				storedFileName = getRandomString() + originalFileExtension; 
-				multipartFile.transferTo(new File(filePath + storedFileName)); 
-				listMap = new HashMap<String,Object>();
+//			multipartFile = mpRequest.getFile(iterator.next()); 
+//			if(multipartFile.isEmpty() == false){ 
+//				originalFileName = multipartFile.getOriginalFilename(); 
+//				originalFileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")); 
+//				storedFileName = getRandomString() + originalFileExtension; 
+//				multipartFile.transferTo(new File(filePath + storedFileName)); 
+//				listMap = new HashMap<String,Object>();
+//				listMap.put("is_new", "Y");
+//				listMap.put("bno", bno); 
+//				listMap.put("org_file_name", originalFileName);
+//				listMap.put("stored_file_name", storedFileName); 
+//				listMap.put("file_size", multipartFile.getSize()); 
+//				list.add(listMap); 
+//			} 
+			
+			MultipartFile mpf = mpRequest.getFile(iterator.next());
+			
+			List<MultipartFile> fileList = mpRequest.getFiles("file[]");
+			
+			System.out.println("fileList: " + fileList.size());
+			
+			for (MultipartFile multipartFile : fileList) {
+				originalFileName = multipartFile.getOriginalFilename();
+				
+				//파일이 없으면 if문을 통해서 그대로 밑으로 내려가버림
+				int index = originalFileName.lastIndexOf(".");
+				if (index < 0) {
+					continue; // early return of for
+				}
+				
+				originalFileExtension = originalFileName.substring(index);
+				storedFileName = getRandomString() + originalFileExtension;
+				File file = new File(filePath + storedFileName);
+				multipartFile.transferTo(file);
+				listMap = new HashMap<String, Object>();
 				listMap.put("is_new", "Y");
 				listMap.put("bno", bno); 
 				listMap.put("org_file_name", originalFileName);
 				listMap.put("stored_file_name", storedFileName); 
 				listMap.put("file_size", multipartFile.getSize()); 
-				list.add(listMap); 
-			} 
+				list.add(listMap);
+			}
 		}
 		
 		return list; 

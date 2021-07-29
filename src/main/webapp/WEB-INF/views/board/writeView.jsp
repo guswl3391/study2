@@ -271,6 +271,7 @@
 				</td>
 			</tr>
         */
+        
         function fn_removeFile(buttonObject) {
         	const td = buttonObject.parentElement;
         	const tr = td.parentElement;

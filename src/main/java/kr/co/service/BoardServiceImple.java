@@ -106,9 +106,14 @@ public class BoardServiceImple implements BoardService {
 	}
 
 	@Override
-	public void answer(BoardVO boardVO) throws Exception {
+	public void answer(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception {
 		dao.answer(boardVO);
-
+		
+		List<Map<String,Object>> list = fileUtils.parseInsertFileInfo(boardVO, mpRequest); 
+		int size = list.size();
+		for(int i=0; i<size; i++){ 
+			dao.insertFile(list.get(i)); //bno가 있다는 것을 debug를 통해 알 수 있음
+		}
 	}
 
 	

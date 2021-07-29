@@ -163,15 +163,9 @@
 	
 	<!-- 게시물 조회 -->
 	<select id="read" parameterType="int" resultType="kr.co.vo.BoardVO">
-		SELECT BNO
-			  , TITLE
-			  , CONTENT
-			  , WRITER
-			  , REGDATE
-			  , DEPTH AS DEPTH
-			  , DEPTH+1 AS NEXTDEPTH
-		 FROM MP_BOARD
-		 WHERE BNO = #{bno}
+		SELECT MB.*, MB.DEPTH+1 AS NEXTDEPTH
+		 FROM MP_BOARD MB
+		 WHERE MB.BNO = #{bno}
 	</select>
 	
 	

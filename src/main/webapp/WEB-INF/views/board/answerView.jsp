@@ -239,7 +239,7 @@
 			
 			
 			<section id="container">
-				<form role="form" name="form" method="post" action="/board/answer">
+				<form role="form" name="form" method="post" action="/board/answer" enctype="multipart/form-data">
 				<input type="hidden" name="answerView" value="${answer.bno }">
 				<input type="hidden" name="parent_bno" id="parent_bno" value="${answer.bno }"> <!-- 앞(전) 글의 bno임. 원글이 아님! -->
 				<input type="hidden" name="beforedepth" value="${answer.depth}">

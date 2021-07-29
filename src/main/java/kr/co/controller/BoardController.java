@@ -91,10 +91,13 @@ public class BoardController {
 			
 	// 게시판 답글 작성
 	@RequestMapping(value = "/board/answer",  method = {RequestMethod.GET, RequestMethod.POST})
-	public String answer(BoardVO boardVO) throws Exception{
+	public String answer(
+			BoardVO boardVO,
+			MultipartHttpServletRequest mpRequest
+		) throws Exception{
 		logger.info("answer");
 			
-		service.answer(boardVO);
+		service.answer(boardVO, mpRequest);
 				
 		return "redirect:/board/list";
 	}
@@ -173,9 +176,15 @@ public class BoardController {
 				BoardVO boardVO, 
 //				 @ModelAttribute("scri") SearchCriteria scri, 
 //				 RedirectAttributes rttr,
+				@RequestParam("fileNoDel[]") List<Integer> fileNoDel,
 				 MultipartHttpServletRequest mpRequest
 			 ) throws Exception {
 			logger.info("update");
+			
+			for (Integer file_no : fileNoDel) {
+				service.deleteFile(file_no);
+			}
+			
 			service.update(boardVO, mpRequest);
 
 //			rttr.addAttribute("page", scri.getPage());
@@ -464,8 +473,8 @@ public class BoardController {
 	
 	@GetMapping("/excel/download")
     public void excelDownload(
-    		HttpServletResponse response 
-    		// @ModelAttribute("scri") SearchCriteria scri
+    		HttpServletResponse response,
+    		@ModelAttribute("scri") SearchCriteria scri //얘 때문에 주소값 파라미터가 안 들어오니까 그냥 싹 다 다운이 됐던 것!
 		) throws Exception {
 //        Workbook wb = new HSSFWorkbook();
         Workbook wb = new XSSFWorkbook();
@@ -498,9 +507,15 @@ public class BoardController {
         cell = row.createCell(3);
         cell.setCellValue("등록일");
         
-       SearchCriteria scri = new SearchCriteria();
-       scri.setPerPageNum(10000);
-       
+		/*
+		 * SearchCriteria scri = new SearchCriteria(); scri.setPerPageNum(10000);
+		 */
+        
+        //setPerPageNum(10000)을  안 해주게 되면, 단지 보이는만큼만 엑셀로 다운이 되기 떄문에 해 줌
+        //setPage(1)도 안 해 주면, 보이는 페이지만! 다운이 됨, 1을 해 줘야 1페이지부터 10000페이지까지 모두 다운이 됨(검색된 키워드로)
+        scri.setPage(1);
+        scri.setPerPageNum(10000);
+        
         // List<BoardVO> list = service.excelList(scri);
        List<BoardVO> list = service.list(scri);
         
@@ -518,11 +533,10 @@ public class BoardController {
         for (BoardVO boardVO : list) {
         	// boolean isDeleted = (boardVO.getDelete_yn().equals("Y"));
         	// boolean isDeleted = ("Y".equals(boardVO.getDelete_yn()));
-        	boolean isDeleted = boardVO.isDeleted();
-        	if (isDeleted) {
-        		continue; //early return
-        	}
-        	
+			/*
+			 * boolean isDeleted = boardVO.isDeleted(); if (isDeleted) { continue; //early
+			 * return }
+			 */
             row = sheet.createRow(rowNum++);
             
             cell = row.createCell(0);

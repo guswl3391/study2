@@ -137,35 +137,22 @@ function cancle_btn(){
 			// 1. 화면 처리
   			const div = buttonObject.parentElement;
   			div.remove();
+  			fn_addFile_count--;
   			
-  			// 2. 서버 처리
-  			// 참고: delete from mp_file where file_no = 35; // 이렇게 실제로 회사에서 주석으로 SQL문 놓으면 완전 큰일난다! -> 고객이 보면 안 되니까 
+  			// 2. 서버에 전송될 삭제시킬 파일 번호 추가
   			const file_no = buttonObject.getAttribute('data-file-no');
-  			// console.log({file_no});
-  			// ajax 호출에서 가장 주의해야 할 것 -> 고객이 request, response를 얼마든지 볼 수 있다. -> 인증 처리, 권한 처리가 중요하다!
-  			
-  			const form = new FormData();
-  			form.append("file_no", file_no);
-
-  			var settings = {
-  			  "url": "/board/deleteFile",
-  			  "method": "POST",
-  			  "timeout": 0,
-  			  "processData": false,
-  			  "mimeType": "multipart/form-data",
-  			  "contentType": false,
-  			  "data": form
-  			};
-
-  			$.ajax(settings).done(function (response) {
-  			  const isSuccess = (response == "true");
-  			  if (isSuccess) {
-  				  alert('삭제 되었습니다.');
-  				  
-  			  } else {
-  				  alert('서버에서 문제가 발생 하였습니다.');
-  			  }
-  			});
+  			// 참고
+  			/*
+  				<div id="divFileNoDel">
+					<input type="hidden" name="fileNoDel[]" value="29">
+				</div>
+  			*/
+  			const divFileNoDel = document.getElementById('divFileNoDel');
+  			const input = document.createElement('input');
+  			input.type = 'hidden';
+  			input.name = 'fileNoDel[]';
+  			input.value = file_no;
+  			divFileNoDel.append(input);
 		}
 
 		
@@ -183,11 +170,20 @@ function cancle_btn(){
 
         	tr_fileAdd_btn.insertAdjacentHTML('beforebegin', 
 	        	`<tr>
-						<td>
+					<td>
 						<input type="file" name="file[]" onchange="fn_changeFile(this);" />
+						<button onclick="fn_removeFile(this);">삭제</button>
 					</td>
 				</tr>
 			`);
+        }
+        
+        function fn_removeFile(buttonObject) {
+        	const td = buttonObject.parentElement;
+        	const tr = td.parentElement;
+        	tr.remove();
+        	
+        	fn_addFile_count--;
         }
         
         function fn_changeFile(inputObject) {
@@ -239,7 +235,13 @@ function cancle_btn(){
 				<form role="form" name="form" method="post" action="/board/update" enctype="multipart/form-data">
 					<%-- <input type="hidden" name="uuid" value="${update.uuid}" readonly="readonly"/> --%>
 					<input type="hidden" name="bno" value="${update.bno}" readonly="readonly"/>
-					<input type="hidden" id="fileNoDel" name="fileNoDel[]" value=""> 
+					
+					
+					<div id="divFileNoDel">
+						<!-- <input type="hidden" name="fileNoDel[]" value="29"> -->
+					</div>
+					
+					
 					<input type="hidden" id="fileNameDel" name="fileNameDel[]" value=""> 
 				
 					

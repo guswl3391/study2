@@ -47,7 +47,7 @@ public interface BoardService {
 		public BoardVO pwcheck(int bno) throws Exception;
 		
 		// 답글 작성
-		public void answer(BoardVO boardVO) throws Exception;
+		public void answer(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception;
 		
 		// 첨부파일 조회
 		public List<Map<String, Object>> selectFileList(int bno) throws Exception;
