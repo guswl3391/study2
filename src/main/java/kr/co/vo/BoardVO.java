@@ -10,18 +10,22 @@ public class BoardVO {
 	private int parent_bno;
 	private int depth;
 	private int nextdepth;
+	
 	private int sort;
 	private String title;
 	private String content;
 	private String writer;
 	private String pw;
+	
 	private Date regdate;
 	private int rnum;
 	private int reply_cnt;
 	private String delete_yn;
 	private String boardYN;
+	
 	private int ordernum;
 	private int rrnum;
+	private String file_yn;
 
 	public BoardVO() {
 		super();
@@ -29,27 +33,33 @@ public class BoardVO {
 
 	
 
-	public BoardVO(int bno, int bno2, int parent_bno, int depth, int nextdepth, int sort, String title, String content,
-			String writer, String pw, Date regdate, int rnum, int reply_cnt, String delete_yn, String boardYN,
-			int ordernum, int rrnum) {
+	public BoardVO(int bno, int bno2, int parent_bno, int depth, int nextdepth,
+			int sort, String title, String content, String writer, String pw,
+			Date regdate, int rnum, int reply_cnt, String delete_yn, String boardYN,
+			int ordernum, int rrnum, String file_yn) {
 		super();
+		
 		this.bno = bno;
 		this.bno2 = bno2;
 		this.parent_bno = parent_bno;
 		this.depth = depth;
 		this.nextdepth = nextdepth;
+		
 		this.sort = sort;
 		this.title = title;
 		this.content = content;
 		this.writer = writer;
 		this.pw = pw;
+		
 		this.regdate = regdate;
 		this.rnum = rnum;
 		this.reply_cnt = reply_cnt;
 		this.delete_yn = delete_yn;
 		this.boardYN = boardYN;
+		
 		this.ordernum = ordernum;
 		this.rrnum = rrnum;
+		this.file_yn = file_yn;
 	}
 
 
@@ -191,6 +201,9 @@ public class BoardVO {
 		this.pw = pw;
 	}
 
+	public String getFile_yn() {
+		return file_yn;
+	}
 
 
 	@Override
