@@ -78,7 +78,7 @@
 							<tr>
 								<td>
 									<label for="title"></label>
-									<b><big><p id="title" name="title" style="width:800px; height:30px;"><b>제목: </b><c:out value="${read.title}" escapeXml="true" /></p></big></b>
+									<p id="title" name="title" style="width:800px; height:30px;"><b><big>제목: <c:out value="${read.title}" escapeXml="true" /></big></b></p>
 									<%-- <input type="text" id="title" name="title" value="${read.title}" readonly="readonly" style="width:800px; height:30px;"/> --%>
 								</td>
 							</tr>	
@@ -120,12 +120,12 @@
 					
 					<div>
 					<%-- <input type="button" onclick="location.href='updateView?bno=${read.bno}'" value="수정"></button> --%>
-					<input type="button"  class="replyUpdateBtn btn btn-warning" onclick="update_btn()" value="수정"></button>
+					<input type="button"  class="replyUpdateBtn btn btn-warning" onclick="update_btn()" value="수정">
 					<%-- <input type="button" onclick="location.href='delete?bno=${read.bno}'" value="삭제"></button> --%>
-					<input type="button" class="btn btn-danger wrn-btn" onclick="delete_btn()" value="삭제"></button>	
+					<input type="button" class="btn btn-danger wrn-btn" onclick="delete_btn()" value="삭제">
 					<!-- <input type="button" onclick="location.href='list';" value="목록"></button>  -->
-					<input type="button" class="list_btn btn btn-primary" onclick="answer_btn()" value="답글"></button>	
-					<input type="button" class="list_btn btn btn-primary" onclick="list_btn()" value="목록"></button>	  
+					<input type="button" class="list_btn btn btn-primary" onclick="answer_btn()" value="답글">
+					<input type="button" class="list_btn btn btn-primary" onclick="list_btn()" value="목록">  
 					</div>
 					</div>
 					
@@ -159,7 +159,7 @@
 				    <br/>
 				    <textarea id="replycontent" name="content" style="width:750px; height: 150px; resize:none;" placeholder="댓글 내용을 입력하세요. 필수 입력 부분입니다."></textarea>
 				  <div>
-				 	 <input type="button" onclick="replyWriteBtn()" value="댓글 작성" class="list_btn btn btn-primary"></button>	  
+				 	 <input type="button" onclick="replyWriteBtn()" value="댓글 작성" class="list_btn btn btn-primary">	  
 				  </div>
 					<br/>
 				  </div>
@@ -205,8 +205,8 @@
 				    	  	</script>  -->
 						  
 						  <div>
-						 	 <input type="button" onclick="replayWWWButton(${replyList.rno}, ${status.count})" value="댓글 수정"  class="replyUpdateBtn btn btn-warning"></button>
-						 	 <input type="button" onclick="replayCancelButton(${status.count})" value="취소" class="btn btn-danger wrn-btn"></button>	  
+						 	 <input type="button" onclick="replayWWWButton(${replyList.rno}, ${status.count})" value="댓글 수정"  class="replyUpdateBtn btn btn-warning">
+						 	 <input type="button" onclick="replayCancelButton(${status.count})" value="취소" class="btn btn-danger wrn-btn"> 
 						  	 <hr/>
 						  </div>
 				      </li>

@@ -92,6 +92,10 @@
 			margin: 0px;
 			padding: 0px;
 		}
+		
+		.file-img { width: 13px; height:14px; cursor:poinrter; }
+					#attach-file, #delete-file { display:none; }
+		
 	</style>
 
 </head>
@@ -191,7 +195,7 @@
 										<c:otherwise>
 											<a href="/board/readView?bno=${list.bno}&rnum=${list.rnum}">
 												<c:out value="${list.title}" escapeXml="true"/>  <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
-												<c:if test ="${'Y' eq list.file_yn}">(*)</c:if>
+												<c:if test ="${'Y' eq list.file_yn}"><img src="/resources/img/file_icon.png" class="file-img"/></c:if>
 											</a>
 										</c:otherwise>
 									</c:choose>
@@ -206,7 +210,7 @@
 										<c:otherwise>
 											<a href="/board/readView?bno=${list.bno}&rnum=${list.rnum}&parent_bno=${list.parent_bno}">
 												<span style="color: green; padding-left: ${list.depth * 10}px;">└ RE: </span><c:out value="${list.title}" escapeXml="true"/>   <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
-												<c:if test ="${'Y' eq list.file_yn}">(*)</c:if>
+												<c:if test ="${'Y' eq list.file_yn}"><img src="/resources/img/file_icon.png" class="file-img"/></c:if>
 											</a>
 										</c:otherwise>
 									</c:choose>
