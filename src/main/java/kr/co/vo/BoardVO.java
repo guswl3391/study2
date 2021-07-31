@@ -161,7 +161,13 @@ public class BoardVO {
 		this.bno = bno;
 	}
 
-	public String getTitle() {  // 모델 안에서 뷰의 처리를 하고 있다! // 예외상황: 뷰의 종류가 하나 더 있을 경우 // 문제: list가 아니라 상세에서도 같은 모델을 보는 다른 뷰가 있었음 -> 여기서 모델을 조회해 오는 곳이 달랐다 -> 
+	public String getTitleView() {  
+		// 모델 안에서 뷰의 처리를 하고 있다! 
+		// 예외상황: 뷰의 종류가 하나 더 있을 경우
+		// 문제1: list가 아니라 상세에서도 같은 모델을 보는 다른 뷰가 있었음 -> 여기서 모델을 조회해 오는 곳이 달랐다 -> 그러면 다 조회해오자!
+		// 문제2: 글 쓰기, 글 수정하기에서 이슈가 생김 -> 그러면 얘를 기본으로 두지 말고, 따로 메소드를 빼자
+		// <이 메소드의 전제: delete_yn, parent_bno가 잘 세팅되어 있어야 한다>
+		// 모델이 뷰에만 보이는 게 아니라, 저장할 때에도 쓰이고 있음!!!!!
 		if ("N".equals(delete_yn)) {
 			return title;
 			
@@ -173,6 +179,10 @@ public class BoardVO {
 				return "== 답글이 삭제되었습니다. ==";
 			}
 		}
+	}
+	
+	public String getTitle() {
+		return title;
 	}
 
 	public void setTitle(String title) {

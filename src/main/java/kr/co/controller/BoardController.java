@@ -544,7 +544,7 @@ public class BoardController {
             cell.setCellValue(boardVO.getBno2());
             
             cell = row.createCell(1);
-            cell.setCellValue(boardVO.getTitle()); //${'Y' eq list.delete_yn && 0 eq list.parent_bno}
+            cell.setCellValue(boardVO.getTitleView()); //${'Y' eq list.delete_yn && 0 eq list.parent_bno}
             
             cell = row.createCell(2);
             cell.setCellValue(boardVO.getWriter());

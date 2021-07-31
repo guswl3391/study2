@@ -190,11 +190,11 @@
 									<c:if test ="${list.depth == 1 }">
 									<c:choose>
 										<c:when test="${'Y' eq list.delete_yn && 0 eq list.parent_bno}">
-											<span><c:out value="${list.title}" escapeXml="true"/></span>
+											<span><c:out value="${list.titleView}" escapeXml="true"/></span>
 										</c:when>
 										<c:otherwise>
 											<a href="/board/readView?bno=${list.bno}&rnum=${list.rnum}">
-												<c:out value="${list.title}" escapeXml="true"/>  <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
+												<c:out value="${list.titleView}" escapeXml="true"/>  <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
 												<c:if test ="${'Y' eq list.file_yn}"><img src="/resources/img/file_icon.png" class="file-img"/></c:if>
 											</a>
 										</c:otherwise>
@@ -205,11 +205,11 @@
 									<c:if test ="${list.depth > 1 }">
 									<c:choose>
 										<c:when test="${'Y' eq list.delete_yn}">
-											<span style="color: green; padding-left: ${list.depth * 10}px;">└ RE: </span><c:out value="${list.title}" escapeXml="true"/>
+											<span style="color: green; padding-left: ${list.depth * 10}px;">└ RE: </span><c:out value="${list.titleView}" escapeXml="true"/>
 										</c:when>
 										<c:otherwise>
 											<a href="/board/readView?bno=${list.bno}&rnum=${list.rnum}&parent_bno=${list.parent_bno}">
-												<span style="color: green; padding-left: ${list.depth * 10}px;">└ RE: </span><c:out value="${list.title}" escapeXml="true"/>   <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
+												<span style="color: green; padding-left: ${list.depth * 10}px;">└ RE: </span><c:out value="${list.titleView}" escapeXml="true"/>   <span style="color: gray;">[</span><span style="color: gray;">${list.reply_cnt }</span><span style="color: gray;">]</span>
 												<c:if test ="${'Y' eq list.file_yn}"><img src="/resources/img/file_icon.png" class="file-img"/></c:if>
 											</a>
 										</c:otherwise>
