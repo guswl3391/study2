@@ -87,8 +87,7 @@
 			  <!-- WHERE (T2.DELETE_YN = 'N' OR (T2.DELETE_YN = 'Y' AND T2.PARENT_BNO = 0)) -->
 		  ) T4
 		  LEFT JOIN
-			(
-			    SELECT
+			( SELECT
 			        bno,
 			        ROW_NUMBER() OVER (ORDER BY bno ASC) as bno2
 			    FROM
