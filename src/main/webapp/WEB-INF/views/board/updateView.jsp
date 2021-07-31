@@ -166,16 +166,32 @@ function cancle_btn(){
 			
 			fn_addFile_count++;
 
-			const tr_fileAdd_btn = document.getElementById('tr_fileAdd_btn');
+// 			const tr_fileAdd_btn = document.getElementById('tr_fileAdd_btn');
 
-        	tr_fileAdd_btn.insertAdjacentHTML('beforebegin', 
-	        	`<tr>
-					<td>
-						<input type="file" name="file[]" onchange="fn_changeFile(this);" />
-						<button onclick="fn_removeFile(this);">삭제</button>
-					</td>
-				</tr>
-			`);
+//         	tr_fileAdd_btn.insertAdjacentHTML('beforebegin', 
+// 	        	`<tr>
+// 					<td>
+// 						<input type="file" name="file[]" onchange="fn_changeFile(this);" />
+// 						<button onclick="fn_removeFile(this);">삭제</button>
+// 					</td>
+// 				</tr>
+// 			`);
+
+			// cham go
+// 			const divFileNoDel = document.getElementById('divFileNoDel');
+//   			const input = document.createElement('input');
+//   			input.type = 'hidden';
+//   			input.name = 'fileNoDel[]';
+//   			input.value = file_no;
+//   			divFileNoDel.append(input);
+
+			const fileIndex = document.getElementById('fileIndex');
+			const tr = document.createElement('tr');
+			tr.innerHTML = `<td>
+								<input type="file" name="file[]" onchange="fn_changeFile(this);" />
+								<button onclick="fn_removeFile(this);">삭제</button>
+							</td>`
+			fileIndex.append(tr);
         }
         
         function fn_removeFile(buttonObject) {
@@ -273,6 +289,12 @@ function cancle_btn(){
 									<div id="test_cnt">(0 / 1000)</div>
 								</td>
 							</tr>
+							
+							<tr id="tr_fileAdd_btn">
+								<td>	
+									<button class="fileAdd_btn" type="button" onclick="fn_addFile()">파일 추가</button>	
+								</td>
+							</tr>
 							<tr>
 								<td id="fileIndex">
 									<c:forEach var="file" items="${file}" varStatus="var">
@@ -285,11 +307,6 @@ function cancle_btn(){
 										<br>
 									</div>
 									</c:forEach>
-								</td>
-							</tr>
-							<tr id="tr_fileAdd_btn">
-								<td>	
-									<button class="fileAdd_btn" type="button" onclick="fn_addFile()">파일 추가</button>	
 								</td>
 							</tr>	
 							
