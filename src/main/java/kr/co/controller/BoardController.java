@@ -176,14 +176,22 @@ public class BoardController {
 				BoardVO boardVO, 
 //				 @ModelAttribute("scri") SearchCriteria scri, 
 //				 RedirectAttributes rttr,
-				@RequestParam("fileNoDel[]") List<Integer> fileNoDel,
+				@RequestParam(name = "fileNoDel[]", required = false) List<Integer> fileNoDel,
 				 MultipartHttpServletRequest mpRequest
 			 ) throws Exception {
 			logger.info("update");
 			
-			for (Integer file_no : fileNoDel) {
-				service.deleteFile(file_no);
+			//fileNoDel가 null일(required = false //optional) 가능성이 있기 때문에 if문으로 한번 감싸줘서 체크가 필요함
+			if(fileNoDel != null) {
+				for (Integer file_no : fileNoDel) {
+					service.deleteFile(file_no);
+				}
 			}
+			
+			/*
+			 * for (int i = 0; fileNoDel != null && i < fileNoDel.size(); i++) { Integer
+			 * file_no = fileNoDel.get(i); service.deleteFile(file_no); }
+			 */
 			
 			service.update(boardVO, mpRequest);
 
